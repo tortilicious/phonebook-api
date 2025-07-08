@@ -1,8 +1,11 @@
 
 //  IMPORTS AND CONFIGURATION
 const express = require('express')
+const morgan = require('morgan')
+
 const app = express()
 app.use(express.json())
+app.use(morgan('tiny'))
 
 //  DATA
 let persons = [
@@ -33,7 +36,7 @@ let persons = [
 //  CRUD ENDPOINTS
 
 
-//  CREATE
+//  =====  CREATE  =====
 
 //  aux function to generate ids while working on memory data
 const generateId = () => {
@@ -69,7 +72,7 @@ app.post('/api/persons', (req, res) => {
   return res.status(201).json(savedPerson)
 })
 
-//  GET
+//  =====  GET  =====
 
 //  get all persons data
 app.get('/api/persons', (req, res) => {
@@ -85,7 +88,6 @@ app.get('/api/persons/:id', (req, res) => {
       : res.status(404).json({error : "No such person"})
 })
 
-
 //  get phonebook info
 app.get('/api/info', (req, res) => {
   const phoneNumbers = persons.length
@@ -99,7 +101,8 @@ app.get('/api/info', (req, res) => {
   `)
 })
 
-//  DELETE
+
+//  =====  DELETE  =====
 
 //  delete one person
 app.delete('/api/persons/:id', (req, res) => {
@@ -114,6 +117,15 @@ app.delete('/api/persons/:id', (req, res) => {
   }
 })
 
+//  middleware to catch wrong endpoint requests
+const unknownEndpoint = (request, response) => {
+  response.status(404).json({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+
+//  ================================================
 
 //  SERVER
 const PORT = 3001
