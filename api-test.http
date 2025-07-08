@@ -1,5 +1,21 @@
 
 
+
+### Test POST a Person without data
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{}
+
+### Test POST a Person with data
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Test API Name",
+  "number": "39-23-1724560"
+}
+
 ### Test GET all Person
 GET http://localhost:3001/api/persons
 

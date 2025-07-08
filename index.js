@@ -32,6 +32,41 @@ let persons = [
 
 //  CRUD ENDPOINTS
 
+
+//  CREATE
+
+//  aux function to generate ids while working on memory data
+const generateId = () => {
+  const maxId = persons.length > 0
+      ? Math.max(...persons.map(n => n.id))
+      : 0
+  return maxId + 1
+}
+
+
+//  create a new person
+app.post('/api/persons', (req, res) => {
+  const newPerson = req.body
+
+  if (!newPerson.name) {
+    return res.status(400).json({error: 'Name is required'})
+  }
+
+  if (!newPerson.number) {
+    return res.status(400).error({error: 'Number is required'})
+  }
+
+  const savedPerson = {
+    "id": generateId(),
+    "name": newPerson.name,
+    "number": newPerson.number,
+  }
+
+  //  Store in memory array
+  persons.push(savedPerson)
+  return res.status(201).json(savedPerson)
+})
+
 //  GET
 
 //  get all persons data
