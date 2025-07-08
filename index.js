@@ -34,10 +34,20 @@ let persons = [
 
 //  GET
 
-//  get all persons
+//  get all persons data
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
+
+//  get one person data
+app.get('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const person = persons.find(person => person.id === id)
+  person
+      ? res.json(person)
+      : res.status(404).json({error : "No such person"})
+})
+
 
 //  get phonebook info
 app.get('/api/info', (req, res) => {

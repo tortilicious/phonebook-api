@@ -1,0 +1,7 @@
+
+
+### Test GET a existing Person
+GET http://localhost:3001/api/persons/1
+
+### Test GET a non existing Person
+GET http://localhost:3001/api/persons/2129
