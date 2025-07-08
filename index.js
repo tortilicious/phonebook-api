@@ -62,6 +62,21 @@ app.get('/api/info', (req, res) => {
   `)
 })
 
+//  DELETE
+
+//  delete one person
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const person = persons.find(person => person.id === id)
+
+  if (person) {
+    persons = persons.filter(person => person.id !== id)
+    res.status(204).end()
+  } else {
+    res.status(404).json({error: "Person not found"})
+  }
+})
+
 
 //  SERVER
 const PORT = 3001

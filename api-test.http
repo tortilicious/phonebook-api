@@ -1,7 +1,16 @@
 
 
+### Test GET all Person
+GET http://localhost:3001/api/persons
+
 ### Test GET a existing Person
 GET http://localhost:3001/api/persons/1
 
 ### Test GET a non existing Person
 GET http://localhost:3001/api/persons/2129
+
+### Test DELETE an existing Person
+DELETE http://localhost:3001/api/persons/1
+
+### Test DELETE a non existing Person
+DELETE http://localhost:3001/api/persons/2129
