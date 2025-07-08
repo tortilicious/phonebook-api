@@ -44,13 +44,18 @@ const generateId = () => {
 //  create a new person
 app.post('/api/persons', (req, res) => {
   const newPerson = req.body
+  const personExist = persons.find(person => person.name === newPerson.name)
 
   if (!newPerson.name) {
     return res.status(400).json({error: 'Name is required'})
   }
 
   if (!newPerson.number) {
-    return res.status(400).error({error: 'Number is required'})
+    return res.status(400).json({error: 'Number is required'})
+  }
+
+  if (personExist) {
+    return res.status(400).json({error: 'Person with that name already exists'})
   }
 
   const savedPerson = {
