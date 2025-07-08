@@ -1,11 +1,33 @@
-
 //  IMPORTS AND CONFIGURATION
 const express = require('express')
 const morgan = require('morgan')
 
+
 const app = express()
 app.use(express.json())
-app.use(morgan('tiny'))
+
+//  Custom token for POST requests
+morgan.token(
+    'body',
+    function(req) {
+      return JSON.stringify(req.body)
+    })
+
+
+//  Morgan custom settings for POST request
+app.use(morgan(':method :url :status - :response-time ms - Request: :body', {
+  skip: function(req) {
+    return req.method !== 'POST'
+  }
+}))
+
+//  Morgan setting to log exept for POST requests
+app.use(morgan('tiny', {
+  skip: function(req) {
+    return req.method === 'POST'
+  }
+}))
+
 
 //  DATA
 let persons = [
@@ -67,7 +89,7 @@ app.post('/api/persons', (req, res) => {
     "number": newPerson.number,
   }
 
-  //  Store in memory array
+  //  store in memory array
   persons.push(savedPerson)
   return res.status(201).json(savedPerson)
 })
@@ -85,7 +107,7 @@ app.get('/api/persons/:id', (req, res) => {
   const person = persons.find(person => person.id === id)
   person
       ? res.json(person)
-      : res.status(404).json({error : "No such person"})
+      : res.status(404).json({error: "No such person"})
 })
 
 //  get phonebook info
@@ -119,9 +141,8 @@ app.delete('/api/persons/:id', (req, res) => {
 
 //  middleware to catch wrong endpoint requests
 const unknownEndpoint = (request, response) => {
-  response.status(404).json({ error: 'unknown endpoint' })
+  response.status(404).json({error: 'unknown endpoint'})
 }
-
 app.use(unknownEndpoint)
 
 
