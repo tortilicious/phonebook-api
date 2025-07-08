@@ -1,14 +1,10 @@
 
-
+//  IMPORTS AND CONFIGURATION
 const express = require('express')
 const app = express()
 app.use(express.json())
 
-const PORT = 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port: ${PORT}`)
-})
-
+//  DATA
 let persons = [
   {
     "id": 1,
@@ -32,7 +28,33 @@ let persons = [
   }
 ]
 
-// GET
+//  ================================================
+
+//  CRUD ENDPOINTS
+
+//  GET
+
+//  get all persons
 app.get('/api/persons', (req, res) => {
   res.json(persons)
+})
+
+//  get phonebook info
+app.get('/api/info', (req, res) => {
+  const phoneNumbers = persons.length
+  const requestDate = new Date()
+
+  res.send(`
+    <div>
+      <p>Phonebook has info for ${phoneNumbers} people</p>
+      <p>${requestDate}</p>
+    </div>
+  `)
+})
+
+
+//  SERVER
+const PORT = 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port: ${PORT}`)
 })
