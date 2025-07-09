@@ -1,11 +1,11 @@
 ### Test POST a Person without data
-POST http://localhost:3001/api/persons
+POST http://localhost:3001/api/contacts
 Content-Type: application/json
 
 {}
 
 ### Test POST a Person with data
-POST http://localhost:3001/api/persons
+POST http://localhost:3001/api/contacts
 Content-Type: application/json
 
 {
@@ -14,16 +14,16 @@ Content-Type: application/json
 }
 
 ### Test GET all Person
-GET http://localhost:3001/api/persons
+GET http://localhost:3001/api/contacts
 
 ### Test GET a existing Person
-GET http://localhost:3001/api/persons/1
+GET http://localhost:3001/api/contacts/1
 
 ### Test GET a non existing Person
-GET http://localhost:3001/api/persons/2129
+GET http://localhost:3001/api/contacts/2129
 
 ### Test DELETE an existing Person
-DELETE http://localhost:3001/api/persons/1
+DELETE http://localhost:3001/api/contacts/1
 
 ### Test DELETE a non existing Person
-DELETE http://localhost:3001/api/persons/2129
+DELETE http://localhost:3001/api/contacts/2129
