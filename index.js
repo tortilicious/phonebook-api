@@ -89,7 +89,7 @@ app.get('/api/contacts/:id', (req, res, next) => {  // ← Agregar 'next'
         if (contact) {
           res.json(contact)
         } else {
-          const error = new Error('Contact not found')
+          const error = new Error('Error: contact not found')
           error.name = 'NotFound'
           return next(error)
         }
@@ -106,12 +106,12 @@ app.delete('/api/contacts/:id', (req, res, next) => {
         if (deletedContact) {
           res.status(204).end()
         } else {
-          const error = new Error('Contact not found')
+          const error = new Error('contact not found')
           error.name = 'NotFound'
           return next(error)
         }
       })
-      .catch(next)  // ← Simplificado
+      .catch(next)
 })
 
 
