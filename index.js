@@ -78,7 +78,7 @@ app.get('/api/info', (req, res, next) => {
   Contact.find({})
       .then((contacts) => {
         const phoneNumbers = contacts.length
-        const requestDate = new Date().toLocaleDateString()
+        const requestDate = new Date().toDateString()
         res.send(`
         <div>
           <p>Phonebook has info for ${phoneNumbers} people</p>
