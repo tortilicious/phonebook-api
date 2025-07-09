@@ -45,9 +45,9 @@ app.use(morgan('tiny', {
 
 //  ======  CREATE  ======
 
-//  create a new contact
-app.post('/api/contacts', (req, res, next) => {  // ← Agregar 'next'
+app.post('/api/contacts', (req, res, next) => {
   const body = req.body
+
 
   if (!body.name) {
     const error = new Error('name missing')
@@ -70,10 +70,10 @@ app.post('/api/contacts', (req, res, next) => {  // ← Agregar 'next'
       .then(savedContact => {
         res.json(savedContact)
       })
-      .catch(next)  // ← Maneja errores de validación de Mongoose
+      .catch(next)
 })
 
-//  =====  GET  =====
+//  =====  READ  =====
 
 //  get all persons data
 app.get('/api/contacts', (req, res) => {
@@ -90,6 +90,40 @@ app.get('/api/contacts/:id', (req, res, next) => {  // ← Agregar 'next'
           res.json(contact)
         } else {
           const error = new Error('Error: contact not found')
+          error.name = 'NotFound'
+          return next(error)
+        }
+      })
+      .catch(next)
+})
+
+//  =====  UPDATE  =====
+
+app.put('/api/contacts/:id', (req, res, next) => {
+  const body = req.body
+
+  if (!body.name) {
+    const error = new Error('name missing')
+    error.name = 'ValidationError'
+    return next(error)
+  }
+
+  if (!body.number) {
+    const error = new Error('number missing')
+    error.name = 'ValidationError'
+    return next(error)
+  }
+
+  Contact.findByIdAndUpdate(
+      req.params.id,
+      {name: body.name, number: body.number},
+      {new: true, runValidators: true}
+  )
+      .then(updatedContact => {
+        if (updatedContact) {
+          res.json(updatedContact)
+        } else {
+          const error = new Error('Contact not found')
           error.name = 'NotFound'
           return next(error)
         }
@@ -126,7 +160,6 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`)
 })
-
 
 //  get phonebook info
 // app.get('/api/info', (req, res) => {
