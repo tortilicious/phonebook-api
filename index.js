@@ -76,7 +76,7 @@ app.post('/api/contacts', (req, res, next) => {
 //  =====  READ  =====
 
 // get phonebook info
-app.get('/api/info', (req, res) => {
+app.get('/api/info', (req, res, next) => {
   Contact.find({})
       .then((contacts) => {
         const phoneNumbers = contacts.length
