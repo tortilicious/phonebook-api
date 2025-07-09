@@ -1,10 +1,12 @@
 //  IMPORTS AND CONFIGURATION
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 //  Custom token for POST requests
 morgan.token(
@@ -149,7 +151,7 @@ app.use(unknownEndpoint)
 //  ================================================
 
 //  SERVER
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`)
 })
