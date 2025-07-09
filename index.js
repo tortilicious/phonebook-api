@@ -3,10 +3,11 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-const mongoose = require('mongoose')
+const errorHandler = require('./middleware/errorHandler')
+const unknownEndpoint = require('./middleware/unknownEndpointHandler')
 
-const app = express()
 const Contact = require('./models/contact')
+const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
@@ -45,26 +46,31 @@ app.use(morgan('tiny', {
 //  ======  CREATE  ======
 
 //  create a new contact
-app.post('/api/contacts', (req, res) => {
+app.post('/api/contacts', (req, res, next) => {  // ← Agregar 'next'
   const body = req.body
 
   if (!body.name) {
-    return res.status(400).json({error: 'name missing'})
+    const error = new Error('name missing')
+    error.name = 'ValidationError'
+    return next(error)
   }
 
   if (!body.number) {
-    return res.status(400).json({error: 'number missing'})
+    const error = new Error('number missing')
+    error.name = 'ValidationError'
+    return next(error)
   }
 
-  const contact = new Contact(
-      {
-        name: body.name,
-        number: body.number,
-      })
-
-  contact.save().then(savedContact => {
-    res.json(savedContact)
+  const contact = new Contact({
+    name: body.name,
+    number: body.number,
   })
+
+  contact.save()
+      .then(savedContact => {
+        res.json(savedContact)
+      })
+      .catch(next)  // ← Maneja errores de validación de Mongoose
 })
 
 //  =====  GET  =====
@@ -77,45 +83,40 @@ app.get('/api/contacts', (req, res) => {
 })
 
 //  get one person data
-app.get('/api/contacts/:id', (req, res) => {
+app.get('/api/contacts/:id', (req, res, next) => {  // ← Agregar 'next'
   Contact.findById(req.params.id)
       .then((contact) => {
         if (contact) {
-          console.log('New contact added')
-          res.json(contact)  // ← Contacto encontrado
+          res.json(contact)
         } else {
-          res.status(404).json({error: 'Contact not found'})  // ← No encontrado
+          const error = new Error('Contact not found')
+          error.name = 'NotFound'
+          return next(error)
         }
       })
-      .catch((err) => {
-        console.log('Error. Could not find contact', err)
-        res.status(400).json({error: 'malformatted id'})  // ← ID inválido
-      })
+      .catch(next)
 })
 
 //  =====  DELETE  =====
 
 //  delete one person
-app.delete('/api/contacts/:id', (req, res) => {
+app.delete('/api/contacts/:id', (req, res, next) => {
   Contact.findByIdAndDelete(req.params.id)
       .then(deletedContact => {
         if (deletedContact) {
-          console.log('Contact deleted successfully')
-          res.status(200).json(deletedContact)
+          res.status(204).end()
         } else {
-          res.status(404).json({ error: 'Contact not found' })
+          const error = new Error('Contact not found')
+          error.name = 'NotFound'
+          return next(error)
         }
       })
-      .catch(error => {
-        res.status(400).json({ error: 'malformatted id' })
-      })
+      .catch(next)  // ← Simplificado
 })
 
-//  middleware to catch wrong endpoint requests
-const unknownEndpoint = (request, response) => {
-  response.status(404).json({error: 'unknown endpoint'})
-}
+
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 
 //  ================================================
