@@ -42,12 +42,10 @@ app.use(morgan('tiny', {
 
 //  CRUD ENDPOINTS
 
-
 //  ======  CREATE  ======
 
 app.post('/api/contacts', (req, res, next) => {
   const body = req.body
-
 
   if (!body.name) {
     const error = new Error('name missing')
@@ -80,7 +78,7 @@ app.get('/api/info', (req, res, next) => {
   Contact.find({})
       .then((contacts) => {
         const phoneNumbers = contacts.length
-        const requestDate = Date.now().toLocaleString()
+        const requestDate = new Date().toLocaleDateString()
         res.send(`
         <div>
           <p>Phonebook has info for ${phoneNumbers} people</p>
