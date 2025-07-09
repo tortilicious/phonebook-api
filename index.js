@@ -161,15 +161,17 @@ app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`)
 })
 
-//  get phonebook info
-// app.get('/api/info', (req, res) => {
-//   const phoneNumbers = persons.length
-//   const requestDate = new Date()
-//
-//   res.send(`
-//     <div>
-//       <p>Phonebook has info for ${phoneNumbers} people</p>
-//       <p>${requestDate}</p>
-//     </div>
-//   `)
-// })
+ // get phonebook info
+app.get('/api/info', (req, res) => {
+  const phoneNumbers = Contact
+      .find({})
+      .then((contacts) => {contacts.length})
+  const requestDate = new Date()
+
+  res.send(`
+    <div>
+      <p>Phonebook has info for ${phoneNumbers} people</p>
+      <p>${requestDate}</p>
+    </div>
+  `)
+})
