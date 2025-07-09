@@ -12,28 +12,26 @@ app.use(cors())
 app.use(express.static('dist'))
 
 
-
-
 //  ======  Morgan middleware CONFIG  ======
 
 //  Custom token for POST requests
 morgan.token(
     'body',
-    function(req) {
+    function (req) {
       return JSON.stringify(req.body)
     })
 
 
 //  Morgan custom settings for POST request
 app.use(morgan(':method :url :status - :response-time ms - Request: :body', {
-  skip: function(req) {
+  skip: function (req) {
     return req.method !== 'POST'
   }
 }))
 
 //  Morgan setting to log exept for POST requests
 app.use(morgan('tiny', {
-  skip: function(req) {
+  skip: function (req) {
     return req.method === 'POST'
   }
 }))
@@ -83,44 +81,34 @@ app.get('/api/contacts/:id', (req, res) => {
   Contact.findById(req.params.id)
       .then((contact) => {
         if (contact) {
+          console.log('New contact added')
           res.json(contact)  // ← Contacto encontrado
         } else {
-          res.status(404).json({ error: 'Contact not found' })  // ← No encontrado
+          res.status(404).json({error: 'Contact not found'})  // ← No encontrado
         }
       })
       .catch((err) => {
         console.log('Error. Could not find contact', err)
-        res.status(400).json({ error: 'malformatted id' })  // ← ID inválido
+        res.status(400).json({error: 'malformatted id'})  // ← ID inválido
       })
 })
-
-//  get phonebook info
-app.get('/api/info', (req, res) => {
-  const phoneNumbers = persons.length
-  const requestDate = new Date()
-
-  res.send(`
-    <div>
-      <p>Phonebook has info for ${phoneNumbers} people</p>
-      <p>${requestDate}</p>
-    </div>
-  `)
-})
-
 
 //  =====  DELETE  =====
 
 //  delete one person
 app.delete('/api/contacts/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    persons = persons.filter(person => person.id !== id)
-    res.status(204).end()
-  } else {
-    res.status(404).json({error: "Person not found"})
-  }
+  Contact.findByIdAndDelete(req.params.id)
+      .then(deletedContact => {
+        if (deletedContact) {
+          console.log('Contact deleted successfully')
+          res.status(200).json(deletedContact)
+        } else {
+          res.status(404).json({ error: 'Contact not found' })
+        }
+      })
+      .catch(error => {
+        res.status(400).json({ error: 'malformatted id' })
+      })
 })
 
 //  middleware to catch wrong endpoint requests
@@ -137,3 +125,17 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`)
 })
+
+
+//  get phonebook info
+// app.get('/api/info', (req, res) => {
+//   const phoneNumbers = persons.length
+//   const requestDate = new Date()
+//
+//   res.send(`
+//     <div>
+//       <p>Phonebook has info for ${phoneNumbers} people</p>
+//       <p>${requestDate}</p>
+//     </div>
+//   `)
+// })
