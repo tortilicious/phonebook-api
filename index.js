@@ -75,6 +75,22 @@ app.post('/api/contacts', (req, res, next) => {
 
 //  =====  READ  =====
 
+// get phonebook info
+app.get('/api/info', (req, res) => {
+  Contact.find({})
+      .then((contacts) => {
+        const phoneNumbers = contacts.length
+        const requestDate = Date.now()
+        res.send(`
+        <div>
+          <p>Phonebook has info for ${phoneNumbers} people</p>
+          <p>${requestDate}</p>
+        </div>
+      `)
+      })
+      .catch(next)
+})
+
 //  get all persons data
 app.get('/api/contacts', (req, res) => {
   Contact.find({}).then((contacts) => {
@@ -149,6 +165,8 @@ app.delete('/api/contacts/:id', (req, res, next) => {
 })
 
 
+
+
 app.use(unknownEndpoint)
 app.use(errorHandler)
 
@@ -161,18 +179,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`)
 })
 
-// get phonebook info
-app.get('/api/info', (req, res) => {
-  Contact.find({})
-    .then((contacts) => {
-      const phoneNumbers = contacts.length
-      const requestDate = Date.now()
-      res.send(`
-        <div>
-          <p>Phonebook has info for ${phoneNumbers} people</p>
-          <p>${requestDate}</p>
-        </div>
-      `)
-    })
-      .catch(next)
-})
