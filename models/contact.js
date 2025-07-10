@@ -7,7 +7,7 @@ const url = process.env.MONGODB_URI
 console.log('connecting to fullStackOpen MongoDB')
 
 mongoose.connect(url)
-    .then(res => {
+    .then(() => {
       console.log('connected to MongoDB')
     })
     .catch(err => {
@@ -15,7 +15,6 @@ mongoose.connect(url)
     })
 
 
-//  Crea el modelo de datos para esta entidad
 const contactSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -26,13 +25,17 @@ const contactSchema = new mongoose.Schema({
   number: {
     type: String,
     required: [true, 'Number is required'],
-    minlength: [9, 'Number must be at least 9 characters'],
+    minlength: [8, 'Number must be at least 8 characters'],
+    validate: {
+      validator: function(v) {
+        return /^[0-9]{2,3}-[0-9]+$/.test(v)
+      },
+      message: 'Number format should be XX-XXXXXXX or XXX-XXXXXXX'
+    },
     trim: true
   }
 })
 
-
-//  Modifica el formato del json que devuelve la petición
 contactSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
