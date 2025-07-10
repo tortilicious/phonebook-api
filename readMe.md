@@ -211,7 +211,7 @@ The application is deployed on **Render** with:
 If you have questions about the project or want to connect:
 
 - **GitHub**: [@tortilicious](https://github.com/tortilicious)
-- **LinkedIn**: [Your LinkedIn profile]
+- **LinkedIn**: (https://www.linkedin.com/in/miguel-lozano-cerrada/)
 - **Portfolio**: [github.com/tortilicious/portfolio](https://github.com/tortilicious/portfolio)
 
 ## 📄 License
