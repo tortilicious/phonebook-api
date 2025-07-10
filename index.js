@@ -45,23 +45,9 @@ app.use(morgan('tiny', {
 //  ======  CREATE  ======
 
 app.post('/api/contacts', (req, res, next) => {
-  const body = req.body
-
-  if (!body.name) {
-    const error = new Error('name missing')
-    error.name = 'ValidationError'
-    return next(error)
-  }
-
-  if (!body.number) {
-    const error = new Error('number missing')
-    error.name = 'ValidationError'
-    return next(error)
-  }
-
   const contact = new Contact({
-    name: body.name,
-    number: body.number,
+    name: req.body.name,
+    number: req.body.number,
   })
 
   contact.save()
@@ -90,10 +76,12 @@ app.get('/api/info', (req, res, next) => {
 })
 
 //  get all persons data
-app.get('/api/contacts', (req, res) => {
-  Contact.find({}).then((contacts) => {
-    res.json(contacts)
-  })
+app.get('/api/contacts', (req, res, next) => {
+  Contact.find({})
+      .then((contacts) => {
+        res.json(contacts)
+      })
+      .catch(next)
 })
 
 //  get one person data
@@ -112,25 +100,10 @@ app.get('/api/contacts/:id', (req, res, next) => {  // ← Agregar 'next'
 })
 
 //  =====  UPDATE  =====
-
 app.put('/api/contacts/:id', (req, res, next) => {
-  const body = req.body
-
-  if (!body.name) {
-    const error = new Error('name missing')
-    error.name = 'ValidationError'
-    return next(error)
-  }
-
-  if (!body.number) {
-    const error = new Error('number missing')
-    error.name = 'ValidationError'
-    return next(error)
-  }
-
   Contact.findByIdAndUpdate(
       req.params.id,
-      {name: body.name, number: body.number},
+      {name: req.body.name, number: req.body.number},
       {new: true, runValidators: true}
   )
       .then(updatedContact => {
@@ -162,12 +135,8 @@ app.delete('/api/contacts/:id', (req, res, next) => {
       .catch(next)
 })
 
-
-
-
 app.use(unknownEndpoint)
 app.use(errorHandler)
-
 
 //  ================================================
 

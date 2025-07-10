@@ -16,11 +16,20 @@ mongoose.connect(url)
 
 
 //  Crea el modelo de datos para esta entidad
-const contactSchema = new mongoose.Schema(
-    {
-      name: String,
-      number: String
-    })
+const contactSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Name is required'],
+    minlength: [3, 'Name must be at least 3 characters'],
+    trim: true
+  },
+  number: {
+    type: String,
+    required: [true, 'Number is required'],
+    minlength: [9, 'Number must be at least 9 characters'],
+    trim: true
+  }
+})
 
 
 //  Modifica el formato del json que devuelve la petición
